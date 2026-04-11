@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GitHub Codebase Explainer — AI-powered tool to understand any GitHub repository using semantic search and LLM">
+    <title>GitHub Codebase Explainer</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- Highlight.js CSS theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation & Controls -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon"><i class='bx bxl-github' ></i></div>
+                <div>
+                    <h2>Code Explainer</h2>
+                    <span class="badge">Powered by Endee DB</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">REPOSITORY</div>
+                <div class="repo-controls">
+                    <input type="url" id="repoInput" class="text-input" placeholder="github.com/user/repo" autocomplete="off" />
+                    <button id="ingestBtn" class="btn btn-primary" onclick="ingestRepo()">
+                        <span id="ingestBtnText">Ingest</span>
+                    </button>
+                </div>
+                <div id="statusBar" class="status-bar">
+                    <span id="statusIcon"></span>
+                    <span id="statusMsg"></span>
+                </div>
+            </div>
+
+            <div class="nav-section" style="flex: 1;">
+                <div class="section-title">QUERY MODE</div>
+                <div class="modes-list">
+                    <button class="mode-btn active" data-mode="explain" onclick="setMode('explain', this)">
+                        <i class='bx bx-building'></i> Architecture
+                    </button>
+                    <button class="mode-btn" data-mode="eli5" onclick="setMode('eli5', this)">
+                        <i class='bx bx-smile'></i> ELI5 Detail
+                    </button>
+                    <button class="mode-btn" data-mode="bugs" onclick="setMode('bugs', this)">
+                        <i class='bx bx-bug'></i> Find Bugs
+                    </button>
+                    <button class="mode-btn" data-mode="search" onclick="setMode('search', this)">
+                        <i class='bx bx-search'></i> Code Search
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                FastAPI • Endee DB
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-empty" id="chatEmpty">
+                    <i class='bx bx-code-alt'></i>
+                    <h3>Ready to explore</h3>
+                    <p>Load a repo from the sidebar and ask questions to begin.</p>
+                </div>
+            </div>
+
+            <div class="question-bar">
+                <div class="input-wrapper">
+                    <input type="text" id="questionInput" class="text-input" placeholder="Ask about architecture, design patterns, components..." autocomplete="off" onkeydown="if(event.key === 'Enter') askQuestion()" />
+                    <button id="askBtn" class="btn-icon" onclick="askQuestion()">
+                        <i class='bx bxs-up-arrow-circle'></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- Custom Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

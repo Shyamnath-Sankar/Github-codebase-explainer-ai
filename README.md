@@ -7,7 +7,7 @@
 
 ## Demo
 
-![Demo](https://files.catbox.moe/your-link-here.gif)
+![Demo](https://github.com/Shyamnath-Sankar/Github-codebase-explainer-ai/releases/download/1.0/export-1775935643955.gif)
 
 ---
 

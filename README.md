@@ -7,18 +7,13 @@
 
 ## Demo
 
-<!-- Replace with your screen recording GIF -->
-[Watch Demo on Google Drive](https://drive.google.com/file/d/1zje7Gr0qCdbaSMkGuzvpRzX625iZIwqE/view?usp=sharing)
+![Demo](https://files.catbox.moe/your-link-here.gif)
 
 ---
 
 ## System Design
 
-<!-- Replace with your architecture diagram image -->
 ![Architecture Diagram](architectural-diagram.png)
-
----
-
 
 ---
 
@@ -28,12 +23,11 @@ Python · JavaScript · TypeScript · Java · Go · Rust · C · C++ · Ruby · 
 
 ---
 
-
 ## Features
 
 - **Ingest any repo** — paste a GitHub URL and the app clones, parses, embeds, and indexes it in seconds
 - **Multi-language support** — works with Python, JS/TS, Java, Go, Rust, C/C++, Ruby, PHP, and more
-- **Plain English Explanantiom** — Ask Anything in Natural Language
+- **Plain English Queries** — ask anything about the codebase in natural language
 - **4 query modes** — Explain Architecture, ELI5, Find Bugs, and Semantic Code Search
 - **Source citations** — every answer links back to the exact file and line number
 - **Hybrid semantic search** — powered by Endee's HNSW vector index for fast, accurate retrieval
@@ -45,7 +39,7 @@ Python · JavaScript · TypeScript · Java · Go · Rust · C · C++ · Ruby · 
 
 1. You paste a GitHub repo URL and hit **Ingest**
 2. The backend clones the repo and walks every source file
-3. Functions, classes, and code blocks are chunked and embedded via Together AI
+3. Functions, classes, and code blocks are chunked and embedded via any OpenAI-compatible embedding API
 4. Embeddings are stored in Endee vector DB with file + line metadata
 5. When you ask a question, Endee retrieves the top 5 most semantically similar chunks
 6. Those chunks are passed as context to the LLM which generates a grounded answer
@@ -55,13 +49,13 @@ Python · JavaScript · TypeScript · Java · Go · Rust · C · C++ · Ruby · 
 
 ## Tech Stack
 
-| Layer       | Technology                                        |
-|-------------|---------------------------------------------------|
-| Backend     | Python · FastAPI                                  |
-| Vector DB   | Endee (Docker · port 8080)                        |
-| Embeddings  | OpenAi Compatible API (Together AI)               |
-| LLM         | OpenAi Compatible API (Together AI)               |
-| Frontend    | HTML · CSS · JavaScript                           |
+| Layer       | Technology                                                                        |
+|-------------|-----------------------------------------------------------------------------------|
+| Backend     | Python · FastAPI                                                                  |
+| Vector DB   | Endee (Docker · port 8080)                                                        |
+| Embeddings  | Any OpenAI-compatible embeddings API (`intfloat/multilingual-e5-large-instruct`)  |
+| LLM         | Any OpenAI-compatible chat completions API (`openai/gpt-oss-20b`)                 |
+| Frontend    | HTML · CSS · JavaScript                                                           |
 
 ---
 
@@ -75,10 +69,11 @@ codebase-explainer/
 │   ├── agent.py       # Query Endee → build context → call LLM → return answer + sources
 │   └── config.py      # Load .env vars
 ├── frontend/
-│   └── index.html     # Dark-themed chat UI with mode selector
+│   └── index.html   # Dark-themed chat UI with mode selector
 ├── .env.example
 ├── requirements.txt
 └── README.md
+|___endee/
 ```
 
 ---
@@ -116,29 +111,31 @@ Verify it's running at `http://localhost:8080`.
 cp .env.example .env
 ```
 
-Edit `.env` and set your Together AI key:
+Edit `.env` with your API credentials:
 
 ```env
-OPENAI_API_KEY=your_together_ai_key_here
+OPENAI_API_KEY=your_api_key_here
 OPENAI_BASE_URL=https://api.together.xyz/v1
 LLM_MODEL=openai/gpt-oss-20b
 ```
 
+> The app uses the standard OpenAI Python SDK with a custom `base_url`, so it works with **any OpenAI-compatible provider** — Together AI, OpenRouter, Groq, local Ollama, etc.
+
 Full variable reference:
 
-| Variable        | Default                                       | Description                          |
-|-----------------|-----------------------------------------------|--------------------------------------|
-| OPENAI_API_KEY  | (required)                                    | Together AI API key                  |
-| OPENAI_BASE_URL | `https://api.together.xyz/v1`                 | OpenAI-compatible endpoint           |
-| EMBED_MODEL     | `intfloat/multilingual-e5-large-instruct`     | Embedding model                      |
-| EMBED_DIM       | `1024`                                        | Embedding dimension                  |
-| LLM_MODEL       | `openai/gpt-oss-20b`                          | Chat completion model                |
-| ENDEE_URL       | `http://localhost:8080/api/v1`                | Endee API base URL                   |
-| INDEX_NAME      | `codebase_index`                              | Endee index name                     |
-| BATCH_SIZE      | `50`                                          | Max vectors per upsert batch         |
-| MAX_CHUNK_CHARS | `2000`                                        | Max chars per chunk for embedding    |
-| MAX_META_CHARS  | `500`                                         | Max chars stored in vector metadata  |
-| TOP_K           | `5`                                           | Search results to retrieve           |
+| Variable        | Default                                       | Description                            |
+|-----------------|-----------------------------------------------|----------------------------------------|
+| OPENAI_API_KEY  | (required)                                    | API key for your chosen provider       |
+| OPENAI_BASE_URL | `https://api.together.xyz/v1`                 | Base URL of your OpenAI-compatible API |
+| EMBED_MODEL     | `intfloat/multilingual-e5-large-instruct`     | Embedding model name                   |
+| EMBED_DIM       | `1024`                                        | Embedding dimension                    |
+| LLM_MODEL       | `openai/gpt-oss-20b`                          | Chat completion model name             |
+| ENDEE_URL       | `http://localhost:8080/api/v1`                | Endee API base URL                     |
+| INDEX_NAME      | `codebase_index`                              | Endee index name                       |
+| BATCH_SIZE      | `50`                                          | Max vectors per upsert batch           |
+| MAX_CHUNK_CHARS | `2000`                                        | Max chars per chunk for embedding      |
+| MAX_META_CHARS  | `500`                                         | Max chars stored in vector metadata    |
+| TOP_K           | `5`                                           | Search results to retrieve             |
 
 ### 4 — Install dependencies
 
@@ -243,6 +240,7 @@ Most vector search demos just swap in whichever DB is trending. We chose Endee s
 - **Metadata filtering** lets us scope searches by file type or language without re-embedding
 - **Single-node scalability up to 1B vectors** — this demo uses hundreds of chunks, but the same setup handles enterprise monorepos without infrastructure changes
 
-## License
+---
 
+## License
 See [endee/LICENSE](endee/LICENSE) for the Endee vector database license.

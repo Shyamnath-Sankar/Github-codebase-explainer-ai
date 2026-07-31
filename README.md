@@ -1,4 +1,4 @@
- # GitHub Codebase Explainer AI
+  # GitHub Codebase Explainer AI
 
 > Ask anything about any GitHub repo — architecture, bugs, or "explain like I'm 5"
 > Supports **Python, JavaScript, TypeScript, Java, Go, Rust, C, C++, Ruby, PHP, and more.**
